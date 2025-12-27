@@ -381,181 +381,226 @@
     </footer>
 
     <script>
-    const toggleSwitch = document.getElementById('toggle-switch');
-    const body = document.body;
-    
-    // Dark Mode Toggle
-    toggleSwitch.addEventListener('change', (e) => { 
-        if (e.target.checked) { body.classList.add('dark-mode'); } 
-        else { body.classList.remove('dark-mode'); } 
-    });
-
-    const radioPlayer = document.getElementById('radioPlayer');
-    const radioToggle = document.getElementById('radioToggle');
-    const radioIcon = document.getElementById('radioIcon');
-    const soundWaves = document.getElementById('soundWaves'); 
-    const volumeSlider = document.getElementById('volumeSlider');
-    const audioRain = document.getElementById('audioRain');
-    const audioForest = document.getElementById('audioForest');
-    const btnRain = document.getElementById('btnRain');
-    const btnForest = document.getElementById('btnForest');
-    const volRain = document.getElementById('volRain');
-    const volForest = document.getElementById('volForest');
-    const timeDisplay = document.getElementById('pomoTime');
-    const pomoToggle = document.getElementById('pomoToggle');
-    const pomoReset = document.getElementById('pomoReset');
-    const pomoIcon = document.getElementById('pomoIcon');
-    const alarmSound = document.getElementById('alarmSound');
-    const statTotalTime = document.getElementById('statTotalTime');
-    const statLoopCount = document.getElementById('statLoopCount');
-    const wrapper = document.getElementById('hareketliEleman');
-    const fill = document.getElementById('progress-fill');
-    const container = document.getElementById('scene-container');
-
-    let isRadioPlaying = false; 
-    let timerInterval = null; 
-    let isRunning = false;
-    let totalTimeInSeconds = 25 * 60; 
-    let remainingTime = totalTimeInSeconds;
-    let currentMode = 'focus'; 
-    let completedLoops = 0; 
-    let totalMinutesWorked = 0;
-
-    /* ============================================================
-       1. İKON TANIMLARI (DÜZELTİLDİ: Class ve currentColor Eklendi)
-       ============================================================ */
-    
-    // RADYO: Oynat (Play) İkonu
-    const radioPlaySvg = `
-         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="svg-icon stroke-icon">
-            <path fill="none" stroke="currentColor" stroke-width="1.5" d="M20.409 9.353a2.998 2.998 0 0 1 0 5.294L7.597 21.614C5.534 22.737 3 21.277 3 18.968V5.033c0-2.31 2.534-3.769 4.597-2.648z"/>
-        </svg>`;
-    
-    // RADYO: Duraklat (Pause) İkonu
-    const radioPauseSvg = `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="svg-icon stroke-icon">
-            <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
-                <rect x="6" y="4" width="4" height="16" rx="1" />
-                <rect x="14" y="4" width="4" height="16" rx="1" />
-            </g>
-        </svg>`;
-
-    // POMODORO: Oynat (Play) İkonu
-    const pomoPlaySvg = `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="svg-icon stroke-icon">
-            <path fill="none" stroke="currentColor" stroke-width="1.5" d="M20.409 9.353a2.998 2.998 0 0 1 0 5.294L7.597 21.614C5.534 22.737 3 21.277 3 18.968V5.033c0-2.31 2.534-3.769 4.597-2.648z"/>
-        </svg>`;
-
-    // POMODORO: Duraklat (Pause) İkonu
-    const pomoPauseSvg = `
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="svg-icon stroke-icon">
-            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5v14m8-14v14"/>
-        </svg>`;
-
-
-    /* ============================================================
-       3. RADYO MANTIĞI
-       ============================================================ */
-    radioPlayer.volume = 0.5;
-    
-    radioToggle.addEventListener('click', () => { 
-        if (isRadioPlaying) { 
-            radioPlayer.pause(); 
-            isRadioPlaying = false; 
-            radioIcon.innerHTML = radioPlaySvg; // SVG Güncellendi
-            radioToggle.classList.remove('active'); 
-            soundWaves.classList.remove('playing'); 
-        } else { 
-            radioPlayer.play(); 
-            isRadioPlaying = true; 
-            radioIcon.innerHTML = radioPauseSvg; // SVG Güncellendi
-            radioToggle.classList.add('active'); 
-            soundWaves.classList.add('playing'); 
-        } 
-    });
-    
-    volumeSlider.addEventListener('input', (e) => { radioPlayer.volume = e.target.value; });
-
-    /* ============================================================
-       4. AMBIENCE MANTIĞI
-       ============================================================ */
-    audioRain.volume = 0.5; audioForest.volume = 0.5;
-    
-    function toggleAmbience(type) { 
-        if (type === 'rain') { 
-            if (audioRain.paused) { audioRain.play(); btnRain.classList.add('active'); } 
-            else { audioRain.pause(); btnRain.classList.remove('active'); } 
-        } else if (type === 'forest') { 
-            if (audioForest.paused) { audioForest.play(); btnForest.classList.add('active'); } 
-            else { audioForest.pause(); btnForest.classList.remove('active'); } 
-        } 
-    }
-    
-    volRain.addEventListener('input', (e) => { audioRain.volume = e.target.value; });
-    volForest.addEventListener('input', (e) => { audioForest.volume = e.target.value; });
-
-    /* ============================================================
-       5. POMODORO MANTIĞI
-       ============================================================ */
-    pomoToggle.addEventListener('click', () => { 
-        if (isRunning) { pauseTimer(); } 
-        else { startTimer(); } 
-    });
-    
-    pomoReset.addEventListener('click', () => { 
-        pauseTimer(); 
-        remainingTime = totalTimeInSeconds; 
-        updateTimeDisplay(); 
-        resetAnimation(); 
-    });
-
-    function startTimer() { 
-        isRunning = true; 
-        pomoIcon.innerHTML = pomoPauseSvg; // SVG Güncellendi
-        runAnimation(remainingTime); 
+        /* ============================================================
+           1. İKON TANIMLARI (SVG CONSTANTS)
+           ============================================================ */
         
-        timerInterval = setInterval(() => { 
-            if (remainingTime > 0) { 
-                remainingTime--; 
-                updateTimeDisplay(); 
+        // 1. RADYO İKONLARI
+        const radioPlaySvg = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="svg-icon stroke-icon">
+                <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                    <circle cx="12" cy="12" r="2"/><path d="M5 4.9a10 10 0 0 0 0 14.2M7.8 7.7a6 6 0 0 0 0 8.6m8.4 0a6 6 0 0 0 0-8.6M19 19.1a10 10 0 0 0 0-14.2"/>
+                </g>
+            </svg>`;
+        
+        const radioPauseSvg = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="svg-icon stroke-icon">
+                <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                    <rect x="6" y="4" width="4" height="16" rx="1" />
+                    <rect x="14" y="4" width="4" height="16" rx="1" />
+                </g>
+            </svg>`;
+
+        // 2. POMODORO İKONLARI
+        const pomoPlaySvg = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="svg-icon stroke-icon">
+                <path fill="none" stroke="currentColor" stroke-width="1.5" d="M20.409 9.353a2.998 2.998 0 0 1 0 5.294L7.597 21.614C5.534 22.737 3 21.277 3 18.968V5.033c0-2.31 2.534-3.769 4.597-2.648z"/>
+            </svg>`;
+
+        const pomoPauseSvg = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="svg-icon stroke-icon">
+                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5v14m8-14v14"/>
+            </svg>`;
+
+
+        /* ============================================================
+           2. DEĞİŞKENLER VE ELEMENTLER
+           ============================================================ */
+        const toggleSwitch = document.getElementById('toggle-switch');
+        const body = document.body;
+        
+        // Dark Mode Toggle
+        toggleSwitch.addEventListener('change', (e) => { 
+            if (e.target.checked) { body.classList.add('dark-mode'); } 
+            else { body.classList.remove('dark-mode'); } 
+        });
+
+        const radioPlayer = document.getElementById('radioPlayer');
+        const radioToggle = document.getElementById('radioToggle');
+        const radioIcon = document.getElementById('radioIcon');
+        const soundWaves = document.getElementById('soundWaves'); 
+        const volumeSlider = document.getElementById('volumeSlider');
+        const audioRain = document.getElementById('audioRain');
+        const audioForest = document.getElementById('audioForest');
+        const btnRain = document.getElementById('btnRain');
+        const btnForest = document.getElementById('btnForest');
+        const volRain = document.getElementById('volRain');
+        const volForest = document.getElementById('volForest');
+        const timeDisplay = document.getElementById('pomoTime');
+        const pomoToggle = document.getElementById('pomoToggle');
+        const pomoReset = document.getElementById('pomoReset');
+        const pomoIcon = document.getElementById('pomoIcon');
+        const alarmSound = document.getElementById('alarmSound');
+        const statTotalTime = document.getElementById('statTotalTime');
+        const statLoopCount = document.getElementById('statLoopCount');
+        const wrapper = document.getElementById('hareketliEleman');
+        const fill = document.getElementById('progress-fill');
+        const container = document.getElementById('scene-container');
+
+        let isRadioPlaying = false; 
+        let timerInterval = null; 
+        let isRunning = false;
+        let totalTimeInSeconds = 25 * 60; 
+        let remainingTime = totalTimeInSeconds;
+        let currentMode = 'focus'; 
+        let completedLoops = 0; 
+        let totalMinutesWorked = 0;
+
+        /* ============================================================
+           3. RADYO MANTIĞI
+           ============================================================ */
+        radioPlayer.volume = 0.5;
+        
+        radioToggle.addEventListener('click', () => { 
+            if (isRadioPlaying) { 
+                radioPlayer.pause(); 
+                isRadioPlaying = false; 
+                radioIcon.innerHTML = radioPlaySvg; 
+                radioToggle.classList.remove('active'); 
+                soundWaves.classList.remove('playing'); 
             } else { 
-                pauseTimer(); 
-                pomoIcon.innerHTML = pomoPlaySvg; // SVG Güncellendi
-                alarmSound.currentTime = 0; 
-                alarmSound.play(); 
-                if (currentMode === 'focus') { 
-                    completedLoops++; 
-                    statLoopCount.innerText = completedLoops; 
-                    const sessionMinutes = Math.floor(totalTimeInSeconds / 60); 
-                    totalMinutesWorked += sessionMinutes; 
-                    statTotalTime.innerText = `${totalMinutesWorked} mins`; 
-                } 
+                radioPlayer.play(); 
+                isRadioPlaying = true; 
+                radioIcon.innerHTML = radioPauseSvg; 
+                radioToggle.classList.add('active'); 
+                soundWaves.classList.add('playing'); 
             } 
-        }, 1000); 
-    }
+        });
+        
+        volumeSlider.addEventListener('input', (e) => { radioPlayer.volume = e.target.value; });
 
-    function pauseTimer() { 
-        isRunning = false; 
-        pomoIcon.innerHTML = pomoPlaySvg; // SVG Güncellendi
-        clearInterval(timerInterval); 
-        freezeAnimation(); 
-    }
+        /* ============================================================
+           4. AMBIENCE MANTIĞI
+           ============================================================ */
+        audioRain.volume = 0.5; audioForest.volume = 0.5;
+        
+        function toggleAmbience(type) { 
+            if (type === 'rain') { 
+                if (audioRain.paused) { audioRain.play(); btnRain.classList.add('active'); } 
+                else { audioRain.pause(); btnRain.classList.remove('active'); } 
+            } else if (type === 'forest') { 
+                if (audioForest.paused) { audioForest.play(); btnForest.classList.add('active'); } 
+                else { audioForest.pause(); btnForest.classList.remove('active'); } 
+            } 
+        }
+        
+        volRain.addEventListener('input', (e) => { audioRain.volume = e.target.value; });
+        volForest.addEventListener('input', (e) => { audioForest.volume = e.target.value; });
 
-    function updateTimeDisplay() { const minutes = Math.floor(remainingTime / 60); const seconds = remainingTime % 60; timeDisplay.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`; }
-    function modDegistir(dakika, btn, modeType) { document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); pauseTimer(); currentMode = modeType; totalTimeInSeconds = dakika * 60; remainingTime = totalTimeInSeconds; updateTimeDisplay(); resetAnimation(); }
-    function runAnimation(duration) { const mesafe = container.offsetWidth; wrapper.style.transition = `transform ${duration}s linear`; fill.style.transition = `width ${duration}s linear`; wrapper.style.transform = `translateX(${mesafe}px)`; fill.style.width = '100%'; }
-    function freezeAnimation() { const wrapperStyle = window.getComputedStyle(wrapper); const fillStyle = window.getComputedStyle(fill); const currentTransform = wrapperStyle.transform; const currentWidth = fillStyle.width; wrapper.style.transition = 'none'; fill.style.transition = 'none'; wrapper.style.transform = currentTransform; fill.style.width = currentWidth; }
-    function resetAnimation() { wrapper.style.transition = 'none'; fill.style.transition = 'none'; wrapper.style.transform = 'translateX(0)'; fill.style.width = '0%'; }
-    window.addEventListener('resize', () => { if (isRunning) { pauseTimer(); alert("Ekran boyutu değiştiği için sayaç durduruldu. Lütfen tekrar başlatın."); resetAnimation(); remainingTime = totalTimeInSeconds; updateTimeDisplay(); } else { resetAnimation(); } });
+        /* ============================================================
+           5. POMODORO MANTIĞI
+           ============================================================ */
+        pomoToggle.addEventListener('click', () => { 
+            if (isRunning) { pauseTimer(); } 
+            else { startTimer(); } 
+        });
+        
+        pomoReset.addEventListener('click', () => { 
+            pauseTimer(); 
+            remainingTime = totalTimeInSeconds; 
+            updateTimeDisplay(); 
+            resetAnimation(); 
+        });
 
-    /* === MOBİL SEKME GEÇİŞİ === */
-    function openTab(tabName, btnElement) {
-        if (window.innerWidth > 768) return;
-        document.querySelectorAll('.tab-content').forEach(card => { card.classList.remove('active-tab'); });
-        document.querySelectorAll('.menu-item').forEach(btn => { btn.classList.remove('active'); });
-        document.getElementById('tab-' + tabName).classList.add('active-tab');
-        btnElement.classList.add('active');
-    }
+        function startTimer() { 
+            isRunning = true; 
+            pomoIcon.innerHTML = pomoPauseSvg; 
+            runAnimation(remainingTime); 
+            
+            timerInterval = setInterval(() => { 
+                if (remainingTime > 0) { 
+                    remainingTime--; 
+                    updateTimeDisplay(); 
+                } else { 
+                    pauseTimer(); 
+                    pomoIcon.innerHTML = pomoPlaySvg; 
+                    alarmSound.currentTime = 0; 
+                    alarmSound.play(); 
+                    if (currentMode === 'focus') { 
+                        completedLoops++; 
+                        statLoopCount.innerText = completedLoops; 
+                        const sessionMinutes = Math.floor(totalTimeInSeconds / 60); 
+                        totalMinutesWorked += sessionMinutes; 
+                        statTotalTime.innerText = `${totalMinutesWorked} mins`; 
+                    } 
+                } 
+            }, 1000); 
+        }
+
+        function pauseTimer() { 
+            isRunning = false; 
+            pomoIcon.innerHTML = pomoPlaySvg; 
+            clearInterval(timerInterval); 
+            freezeAnimation(); 
+        }
+
+        /* ============================================================
+           6. DİĞER FONKSİYONLAR
+           ============================================================ */
+        function updateTimeDisplay() { 
+            const minutes = Math.floor(remainingTime / 60); 
+            const seconds = remainingTime % 60; 
+            timeDisplay.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`; 
+        }
+        
+        function modDegistir(dakika, btn, modeType) { 
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active')); 
+            btn.classList.add('active'); 
+            pauseTimer(); 
+            currentMode = modeType; 
+            totalTimeInSeconds = dakika * 60; 
+            remainingTime = totalTimeInSeconds; 
+            updateTimeDisplay(); 
+            resetAnimation(); 
+        }
+        
+        function runAnimation(duration) { 
+            const mesafe = container.offsetWidth; 
+            wrapper.style.transition = `transform ${duration}s linear`; 
+            fill.style.transition = `width ${duration}s linear`; 
+            wrapper.style.transform = `translateX(${mesafe}px)`; 
+            fill.style.width = '100%'; 
+        }
+        
+        function freezeAnimation() { 
+            const wrapperStyle = window.getComputedStyle(wrapper); 
+            const fillStyle = window.getComputedStyle(fill); 
+            const currentTransform = wrapperStyle.transform; 
+            const currentWidth = fillStyle.width; 
+            wrapper.style.transition = 'none'; 
+            fill.style.transition = 'none'; 
+            wrapper.style.transform = currentTransform; 
+            fill.style.width = currentWidth; 
+        }
+        
+        function resetAnimation() { 
+            wrapper.style.transition = 'none'; 
+            fill.style.transition = 'none'; 
+            wrapper.style.transform = 'translateX(0)'; 
+            fill.style.width = '0%'; 
+        }
+        
+        // DÜZELTME: Resize eventini tamamen kaldırdık. 
+        // Böylece ekran boyutu değişse bile sayaç durmayacak.
+
+        /* === MOBİL SEKME GEÇİŞİ === */
+        function openTab(tabName, btnElement) {
+            if (window.innerWidth > 768) return;
+            document.querySelectorAll('.tab-content').forEach(card => { card.classList.remove('active-tab'); });
+            document.querySelectorAll('.menu-item').forEach(btn => { btn.classList.remove('active'); });
+            document.getElementById('tab-' + tabName).classList.add('active-tab');
+            btnElement.classList.add('active');
+        }
     </script>
 </body>
 </html>
