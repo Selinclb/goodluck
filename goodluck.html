@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Good Luck! (●'◡'●)</title>
+    <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.11/dist/dotlottie-wc.js" type="module"></script>
+
+    <style>
+        /* =========================================
+           1. RENK PALETİ VE DEĞİŞKENLER
+           ========================================= */
+        :root {
+            /* Gündüz */
+            --bg-gradient: linear-gradient(to bottom, #87CEEB, #E0F7FA);
+            --text-main: #333;
+            --text-sub: #555;
+            --card-bg: rgba(255, 255, 255, 0.65); 
+            --card-border: rgba(255, 255, 255, 0.8);
+            --track-bg: rgba(255, 255, 255, 0.5);
+            --stats-bg: rgba(255, 255, 255, 0.5);
+            --stats-border: rgba(255, 255, 255, 0.8);
+            --btn-bg: rgba(255, 255, 255, 0.8);
+            --btn-hover: #fff;
+            --btn-icon-color: #333;
+            --ambience-row-bg: rgba(255, 255, 255, 0.4);
+            --shadow-color: rgba(31, 38, 135, 0.1);
+            --accent-color: #ff6b6b;
+            --accent-gradient: linear-gradient(90deg, #ff9a9e 0%, #ff6b6b 100%);
+            --menu-bg: rgba(255, 255, 255, 0.1);
+            --menu-text: #555;
+            --menu-border: rgba(255, 255, 255, 0.5);
+            --menu-active-text: #fff;
+        }
+
+        /* Gece */
+        body.dark-mode {
+            --bg-gradient: linear-gradient(to bottom, #0b1026, #2b32b2);
+            --text-main: #f0f0f0;
+            --text-sub: #ccc;
+            --card-bg: rgba(20, 30, 48, 0.6);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --track-bg: rgba(255, 255, 255, 0.1);
+            --stats-bg: rgba(0, 0, 0, 0.4);
+            --stats-border: rgba(255, 255, 255, 0.1);
+            --btn-bg: rgba(255, 255, 255, 0.1);
+            --btn-hover: rgba(255, 255, 255, 0.2);
+            --btn-icon-color: #fff;
+            --ambience-row-bg: rgba(0, 0, 0, 0.3);
+            --shadow-color: rgba(0,0,0,0.5);
+            --menu-bg: rgba(0, 0, 0, 0.85);
+            --menu-text: #aaa;
+            --menu-border: rgba(255, 255, 255, 0.1);
+        }
+
+        /* =========================================
+           2. TEMEL DÜZEN
+           ========================================= */
+        body {
+            margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif;
+            display: flex; flex-direction: column; align-items: center; 
+            min-height: 100vh; 
+            gap: 30px; 
+            overflow-x: hidden; 
+            background: var(--bg-gradient); 
+            background-size: 400% 400%;
+            transition: background 0.5s ease;
+            color: var(--text-main);
+            padding-top: 80px; 
+            padding-bottom: 50px; 
+        }
+
+        .background-atmosphere {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; pointer-events: none;
+        }
+
+        /* --- BULUT & YILDIZ --- */
+        .sky-clouds { position: absolute; width: 100%; height: 100%; transition: opacity 1s ease; opacity: 1; }
+        body.dark-mode .sky-clouds { opacity: 0; }
+        
+        .cloud { position: absolute; background: #fff; border-radius: 50px; opacity: 0.6; filter: blur(5px); animation: floatCloud linear infinite; }
+        .cloud::after, .cloud::before { content: ''; position: absolute; background: inherit; border-radius: 50%; }
+        /* Bulutlar SAĞDAN SOLA kaysın diye right ve -translateX kullandık */
+        .cloud-1 { width: 120px; height: 50px; top: 10%; right: -150px; animation-duration: 25s; }
+        .cloud-1::after { width: 50px; height: 50px; top: -25px; left: 20px; } 
+        .cloud-1::before { width: 40px; height: 40px; top: -15px; left: 55px; }
+        .cloud-2 { width: 180px; height: 70px; top: 30%; right: -200px; animation-duration: 35s; animation-delay: 2s; opacity: 0.4; }
+        .cloud-2::after { width: 70px; height: 70px; top: -35px; left: 30px; } 
+        .cloud-2::before { width: 60px; height: 60px; top: -25px; left: 80px; }
+        .cloud-3 { width: 100px; height: 40px; top: 70%; right: -120px; animation-duration: 20s; animation-delay: 5s; opacity: 0.5; } 
+        .cloud-3::after { width: 40px; height: 40px; top: -20px; left: 15px; }
+        .cloud-4 { width: 150px; height: 60px; top: 15%; right: -180px; animation-duration: 40s; animation-delay: 15s; } 
+        .cloud-4::after { width: 60px; height: 60px; top: -30px; left: 25px; }
+        
+        @keyframes floatCloud { 0% { transform: translateX(0); } 100% { transform: translateX(-120vw); } }
+
+        .night-stars { position: absolute; width: 100%; height: 100%; opacity: 0; transition: opacity 1s ease; }
+        body.dark-mode .night-stars { opacity: 1; }
+        .star-layer { position: absolute; width: 1px; height: 1px; background: transparent; }
+        .layer-1 { box-shadow: 10vw 10vh #FFF, 20vw 50vh #FFF, 30vw 20vh #FFF, 80vw 80vh #FFF, 90vw 10vh #FFF, 50vw 50vh #FFF, 60vw 90vh #FFF, 10vw 90vh #FFF; animation: twinkle 2s infinite ease-in-out alternate; }
+        .layer-2 { width: 2px; height: 2px; box-shadow: 15vw 15vh #FFF, 35vw 45vh #FFF, 55vw 25vh #FFF, 75vw 65vh #FFF, 85vw 15vh #FFF, 25vw 85vh #FFF, 65vw 35vh #FFF; animation: twinkle 3s infinite ease-in-out alternate; opacity: 0.7; }
+        .layer-3 { width: 3px; height: 3px; box-shadow: 5vw 85vh #FFF, 95vw 5vh #FFF, 45vw 15vh #FFF, 25vw 35vh #FFF; animation: twinkle 4s infinite ease-in-out alternate; opacity: 0.5; }
+        @keyframes twinkle { 0% { opacity: 0.3; } 100% { opacity: 1; } }
+
+        /* --- BİLEŞENLER --- */
+        .custom-toggle-wrapper { position: absolute; top: 20px; right: 20px; transform: scale(0.35); transform-origin: top right; z-index: 100; }
+        .toggle-checkbox { display: none; }
+        .toggle-container { position: relative; width: 471px; height: 150px; background-color: #2e8bde; border-radius: 132.2px; overflow: hidden; cursor: pointer; box-shadow: inset 4.48px 8.96px 4.48px #01004440, inset -4.48px -4.48px 4.48px #01005940; transition: background-color 0.5s ease-in-out; display: block; }
+        .toggle-checkbox:checked + .toggle-container { background-color: #021220; }
+        .clouds { position: absolute; top: 38px; left: -45px; width: 549px; height: 202px; transition: transform 0.6s ease-in-out, opacity 0.4s; }
+        .toggle-checkbox:checked + .toggle-container .day-clouds { transform: translateY(200px); opacity: 0; }
+        .ellipse, .div, .ellipse-2, .ellipse-3, .ellipse-4, .ellipse-5, .ellipse-6 { background-color: #f0f0f0; position: absolute; width: 112px; height: 112px; border-radius: 56.02px; }
+        .ellipse { top: 1px; left: 437px; } .div { top: 47px; left: 358px; } .ellipse-2 { top: 65px; left: 285px; } .ellipse-3 { top: 72px; left: 213px; } .ellipse-4 { top: 83px; left: 141px; } .ellipse-5 { top: 90px; left: 69px; } .ellipse-6 { top: 76px; left: 1px; }
+        .glow { position: absolute; top: -130px; left: -108px; width: 437px; height: 437px; transition: transform 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55); }
+        .big { position: absolute; top: 0; left: 0; width: 437px; height: 437px; background-color: #d9d9d9; border-radius: 50%; opacity: 0.2; }
+        .medium { position: absolute; top: 44px; left: 44px; width: 350px; height: 350px; background-color: #d9d9d9; border-radius: 50%; opacity: 0.2; }
+        .small { position: absolute; top: 87px; left: 87px; width: 262px; height: 262px; background-color: #fff; border-radius: 50%; opacity: 1; box-shadow: 0 0 40px rgba(255,255,255,0.8); }
+        .toggle-checkbox:checked + .toggle-container .glow { transform: translateX(300px); }
+        .stars-container-toggle { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.6s ease-in-out; }
+        .star-dot { position: absolute; background: white; border-radius: 50%; }
+        .toggle-checkbox:checked + .toggle-container .stars-container-toggle { opacity: 1; }
+        
+        .good-luck-message { width: 100%; text-align: center; color: var(--accent-color); font-size: 24px; font-weight: 700; margin: 0; z-index: 100;border-bottom: none; }
+        .stats-panel { display: flex; align-items: center; gap: 20px; background: var(--stats-bg); backdrop-filter: blur(10px); padding: 10px 30px; border-radius: 50px; border: 1px solid var(--stats-border); box-shadow: 0 4px 10px var(--shadow-color); z-index: 5; transition: 0.3s; }
+        .stat-item { display: flex; flex-direction: column; align-items: center; }
+        .stat-label { font-size: 0.75rem; color: var(--text-sub); font-weight: 600; text-transform: uppercase; }
+        .stat-value { font-size: 1.1rem; font-weight: bold; color: var(--text-main); }
+        .stat-divider { width: 1px; height: 25px; background-color: var(--text-sub); opacity: 0.3; }
+
+        #scene-container { width: 90%; max-width: 1200px; margin: 0 auto; height: 250px; position: relative; margin-bottom: -30px; }
+        #progress-track { position: absolute; top: 50%; transform: translateY(-50%); left: 0; width: 100%; height: 8px; background-color: var(--track-bg); border-radius: 10px; overflow: hidden; z-index: 1; transition: 0.3s; }
+        #progress-fill { width: 0%; height: 100%; background: var(--accent-gradient); transition-timing-function: linear; }
+        .lottie-wrapper { position: absolute; top: calc(50% - 180px); left: -125px; width: 250px; height: 250px; z-index: 10; transition-timing-function: linear; pointer-events: none; }
+        .lottie-wrapper dotlottie-wc { transform: scaleX(-1); }
+
+        .cards-wrapper { display: flex; gap: 20px; align-items: flex-start; justify-content: center; flex-wrap: wrap; z-index: 20; width: 95%; }
+        .pill-card { background: var(--card-bg); backdrop-filter: blur(10px); padding: 20px 30px; border-radius: 20px; box-shadow: 0 10px 30px var(--shadow-color); text-align: center; width: 280px; display: flex; flex-direction: column; align-items: center; border: 1px solid var(--card-border); min-height: 280px; justify-content: space-between; transition: 0.3s; }
+        .tab-label { font-weight: bold; color: var(--text-sub); display: block; margin-bottom: 15px;}
+        .icon-btn, .ambience-icon-btn { border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
+        .icon-btn { width: 50px; height: 50px; background: var(--btn-bg); color: var(--btn-icon-color); font-size: 1.2rem; }
+        .icon-btn:hover { background: var(--btn-hover); }
+        .icon-btn.active { background: var(--accent-color); color: white; }
+        .ambience-row { display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 20px; background: var(--ambience-row-bg); padding: 10px; border-radius: 15px; transition: 0.3s; }
+        .ambience-icon-btn { width: 40px; height: 40px; border-radius: 12px; background: var(--card-bg); color: var(--text-main); font-size: 1.2rem; }
+        .ambience-icon-btn.active { background: #74b9ff; color: white; }
+        .slider-group { flex: 1; margin-left: 15px; display: flex; flex-direction: column; align-items: flex-start; }
+        .slider-label { font-size: 0.7rem; color: var(--text-sub); margin-bottom: 5px; }
+        .mini-slider { width: 100%; accent-color: #74b9ff; height: 4px; cursor: pointer; }
+        .wave-container { display: flex; justify-content: center; align-items: center; gap: 4px; height: 60px; margin: 20px 0 30px 0; }
+        .wave-bar { width: 4px; height: 10%; background-color: var(--accent-color); border-radius: 4px; animation: fluidWave 1s ease-in-out infinite; animation-play-state: paused; }
+        .wave-container.playing .wave-bar { animation-play-state: running; }
+        .wave-bar:nth-child(odd) { animation-duration: 0.8s; } .wave-bar:nth-child(even) { animation-duration: 1.1s; }
+        .wave-bar:nth-child(1) { animation-delay: -0.4s; } .wave-bar:nth-child(2) { animation-delay: -0.2s; } .wave-bar:nth-child(3) { animation-delay: -0.9s; } .wave-bar:nth-child(4) { animation-delay: -0.5s; }
+        @keyframes fluidWave { 0%, 100% { height: 10%; opacity: 0.5; } 50% { height: 90%; opacity: 1; } }
+        .volume-control { display: flex; align-items: center; gap: 10px; width: 100%; margin-top: 0px; }
+        input[type=range] { flex: 1; accent-color: var(--accent-color); cursor: pointer; }
+        .circle-label { font-size: 3rem; font-weight: bold; color: var(--text-main); margin: 10px 0; }
+        .pomo-modes { display: flex; gap: 5px; margin-bottom: 15px; }
+        .mode-btn { border: none; background: transparent; cursor: pointer; padding: 5px 10px; border-radius: 15px; color: var(--text-sub); font-size: 0.9rem; transition: 0.3s; }
+        .mode-btn.active { background: var(--accent-color); color: white; }
+        .icon-row { display: flex; gap: 15px; justify-content: center; }
+
+        /* --- SVG GENEL AYARLARI (ÖNEMLİ: MEDIA QUERY DIŞINA ALINDI) --- */
+        .svg-icon {
+            width: 24px;
+            height: 24px;
+            transition: 0.3s;
+        }
+        .stroke-icon { fill: none; stroke: currentColor; }
+        .fill-icon { fill: currentColor; stroke: none; }
+
+
+        /* FOOTER STİLİ */
+        footer {
+            margin-top: auto; 
+            width: 100%;
+            text-align: center;
+            padding: 15px 0;
+            z-index: 10;
+        }
+        .copyright-text {
+            font-size: 0.8rem;
+            color: var(--text-sub);
+            opacity: 0.7;
+            margin: 0;
+        }
+
+
+        /* =========================================
+           4. RESPONSIVE AYARLAR VE TAB MENÜSÜ
+           ========================================= */
+
+        /* Masaüstünde Menü Gizli */
+        .mobile-menu { display: none; }
+
+        /* --- TABLET (1024px ve altı) --- */
+        @media (max-width: 1024px) {
+            .cards-wrapper { width: 95%; justify-content: center; }
+            #scene-container { width: 95%; }
+        }
+
+        /* --- MOBİL CİHAZLAR (768px ve altı) --- */
+        @media (max-width: 768px) {
+            
+            body { padding-left: 0; padding-right: 0; gap: 15px; }
+
+            .cards-wrapper {
+                width: 100%;
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+
+            /* --- MOBİL TAB MENÜ --- */
+            .mobile-menu {
+                display: flex;
+                justify-content: space-around;
+                width: 90%; 
+                margin: 0 auto 5px auto; 
+                max-width: 400px;
+                background: var(--menu-bg); 
+                padding: 10px 15px;
+                border-radius: 50px;
+                backdrop-filter: blur(15px);
+                border: 1px solid var(--menu-border);
+                box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            }
+
+            .menu-item {
+                background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--menu-text); cursor: pointer; transition: 0.3s; padding: 0;
+            }
+
+            .menu-icon {
+                width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.3s; position: relative;
+            }
+
+            .menu-item span { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.5px; }
+
+            .menu-item.active { color: var(--accent-color); }
+            .menu-item.active .menu-icon {
+                background: var(--accent-color); color: var(--menu-active-text); box-shadow: 0 5px 15px rgba(0,0,0,0.2); transform: translateY(-2px);
+            }
+            .menu-item.active span { color: #fff; }
+
+            /* --- KART GİZLE/GÖSTER --- */
+            .pill-card { width: 90% !important; margin: 0 auto; max-width: 400px; padding: 20px; box-sizing: border-box; }
+            .tab-content { display: none !important; width: 92%; margin: 0 auto; max-width: 400px; animation: slideDown 0.4s ease; }
+            .tab-content.active-tab { display: flex !important; }
+
+            @keyframes slideDown {
+                from { opacity: 0; transform: translateY(-20px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+
+            .custom-toggle-wrapper { transform: scale(0.25); top: 15px; right: 10px; }
+            .lottie-wrapper { width: 180px; height: 180px; left: -90px; top: calc(50% - 130px); }
+            #scene-container { width: 90%; height: 200px; }
+            .stats-panel { padding: 8px 20px; gap: 15px; }
+            .stat-value { font-size: 0.9rem; } .stat-label { font-size: 0.65rem; }
+        }
+
+        /* --- ÇOK KÜÇÜK EKRANLAR --- */
+        @media (max-width: 400px) {
+            .lottie-wrapper { width: 140px; height: 140px; left: -70px; top: calc(50% - 100px); }
+            #scene-container { height: 160px; width: 100%; }
+            .circle-label { font-size: 2.5rem; }
+            .menu-icon { width: 40px; height: 40px; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="background-atmosphere">
+        <div class="sky-clouds"><div class="cloud cloud-1"></div><div class="cloud cloud-2"></div><div class="cloud cloud-3"></div><div class="cloud cloud-4"></div></div>
+        <div class="night-stars"><div class="star-layer layer-1"></div><div class="star-layer layer-2"></div><div class="star-layer layer-3"></div></div>
+    </div>
+
+    <div class="custom-toggle-wrapper">
+        <input type="checkbox" id="toggle-switch" class="toggle-checkbox" />
+        <label for="toggle-switch" class="toggle-container">
+            <div class="toggle-scene">
+                <div class="clouds day-clouds"><div class="ellipse"></div><div class="div"></div><div class="ellipse-2"></div><div class="ellipse-3"></div><div class="ellipse-4"></div><div class="ellipse-5"></div><div class="ellipse-6"></div></div>
+                <div class="stars-container-toggle"><div class="star-dot" style="top: 20px; left: 50px; width: 4px; height: 4px;"></div><div class="star-dot" style="top: 80px; left: 150px; width: 6px; height: 6px;"></div><div class="star-dot" style="top: 40px; left: 250px; width: 3px; height: 3px;"></div><div class="star-dot" style="top: 100px; left: 350px; width: 5px; height: 5px;"></div><div class="star-dot" style="top: 30px; left: 400px; width: 4px; height: 4px;"></div></div>
+                <div class="glow"><div class="big"></div><div class="medium"></div><div class="small"></div></div>
+            </div>
+        </label>
+    </div>
+    <p class="good-luck-message">Good Luck !</p>
+    <div class="stats-panel">
+        <div class="stat-item"><span class="stat-label">Total Time</span><span class="stat-value" id="statTotalTime">0 mins</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat-item"><span class="stat-label">Loop Time</span><span class="stat-value" id="statLoopCount">0</span></div>
+    </div>
+
+    <div id="scene-container">
+        <div class="lottie-wrapper" id="hareketliEleman"><dotlottie-wc src="https://lottie.host/983731e0-3160-422a-b44a-36bee6417288/TQpV0LIKPy.lottie" style="width: 100%; height: 100%;" autoplay loop></dotlottie-wc></div>
+        <div id="progress-track"><div id="progress-fill"></div></div>
+    </div>
+
+    <div class="cards-wrapper">
+
+        <div class="mobile-menu">
+            <button class="menu-item" onclick="openTab('radio', this)">
+                <div class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="svg-icon stroke-icon">
+                        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                            <circle cx="12" cy="12" r="2"/><path d="M5 4.9a10 10 0 0 0 0 14.2M7.8 7.7a6 6 0 0 0 0 8.6m8.4 0a6 6 0 0 0 0-8.6M19 19.1a10 10 0 0 0 0-14.2"/>
+                        </g>
+                    </svg></div>
+                <span>Radio</span>
+            </button>
+            
+            <button class="menu-item active" onclick="openTab('pomo', this)">
+                <div class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 26" class="svg-icon fill-icon">
+                        <path fill="currentColor" d="M13 .188c-1.104 0-2 .844-2 1.812h4c0-.908-.896-1.813-2-1.813zM4.969.5C3.916.582 2.867 1.07 2 1.938C.268 3.67-.077 6.173 1.656 7.905l6.282-6.281C7.072.758 6.021.418 4.967.5zM20.25.5c-.781.105-1.538.475-2.188 1.125l6.282 6.281c1.733-1.732 1.388-4.235-.344-5.968C22.917.853 21.552.325 20.25.5M13 3.188C7.028 3.188 2.187 8.027 2.187 14c0 3.581 1.756 6.751 4.438 8.719l-.781 2.312a.684.684 0 0 0 .406.844a.695.695 0 0 0 .906-.281l1.032-1.907A10.8 10.8 0 0 0 13 24.813c1.727 0 3.364-.405 4.813-1.125l1.03 1.907c.1.199.451.48.907.281a.684.684 0 0 0 .406-.844l-.781-2.312c2.682-1.968 4.438-5.138 4.438-8.719c0-5.972-4.841-10.813-10.813-10.813m-1 2.624V6.5a1 1 0 0 0 .469.844a.75.75 0 0 0-.125.343l-.25 5.032A1.57 1.57 0 0 0 11.438 14c0 .867.695 1.563 1.562 1.563c.055 0 .103-.026.156-.032l3.063 2.719c.172.154.604.27.968-.094c.365-.365.244-.794.094-.968l-2.718-3.125V14c0-.553-.287-1.033-.72-1.313l-.187-5a.75.75 0 0 0-.125-.343A1 1 0 0 0 14 6.5v-.688c3.706.452 6.682 3.374 7.188 7.063H20.5a1 1 0 0 0-.125 0a1.127 1.127 0 1 0 .125 2.25h.688c-.5 3.648-3.415 6.562-7.063 7.063V21.5a1.123 1.123 0 0 0-1.375-1.125a1.12 1.12 0 0 0-.875 1.125v.688c-3.648-.5-6.562-3.415-7.063-7.063H5.5a1.125 1.125 0 0 0 0-2.25h-.688C5.319 9.185 8.294 6.264 12 5.812"/>
+                    </svg></div>
+                <span>Pomodoro</span>
+            </button>
+            
+            <button class="menu-item" onclick="openTab('ambience', this)">
+                <div class="menu-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="svg-icon stroke-icon">
+                        <circle cx="24" cy="24" r="21.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                        <circle cx="20.718" cy="28.956" r="1.5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+                        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M15.998 43.96A11.069 11.069 0 0 0 3.14 29.225m14.008-.095a15.83 15.83 0 0 0-14.642-4.623M20.585 45.23a15.85 15.85 0 0 0-1.115-12.945m.668-6.88a20.48 20.48 0 0 0-14.467-5.957a21 21 0 0 0-2.726.179M25.484 45.45a20.6 20.6 0 0 0 .733-5.457a20.46 20.46 0 0 0-2.3-9.456m.379-14.473h5.606v3.68h-5.606z" stroke-width="2"/>
+                        <circle cx="20.718" cy="28.933" r="3.578" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+                        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" d="M24.296 19.744v9.189" stroke-width="2"/>
+                    </svg></div>
+                <span>Ambiance</span>
+            </button>
+        </div>
+
+        <article class="pill-card glass tab-content" id="tab-radio">
+            <span class="tab-label">Radio</span>
+            <div class="wave-container" id="soundWaves"><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div></div>
+            <div class="icon-row" style="margin-bottom: 20px;"><button id="radioToggle" class="icon-btn"><span id="radioIcon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="svg-icon stroke-icon">
+            <path fill="none" stroke="currentColor" stroke-width="1.5" d="M20.409 9.353a2.998 2.998 0 0 1 0 5.294L7.597 21.614C5.534 22.737 3 21.277 3 18.968V5.033c0-2.31 2.534-3.769 4.597-2.648z"/>
+        </svg></span></button></div>
+            <div class="volume-control"><span style="font-size: 0.8rem; color:var(--text-sub)"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="svg-icon stroke-icon"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298zM16 9a5 5 0 0 1 0 6m3.364 3.364a9 9 0 0 0 0-12.728"/></svg></span><input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5"></div>
+            <audio id="radioPlayer" preload="none"><source src="https://icecast.radiofrance.fr/fip-midfi.mp3" type="audio/mpeg"></audio>
+        </article>
+        <article class="pill-card glass pomo-card tab-content active-tab" id="tab-pomo">
+            <span class="tab-label">Pomodoro</span>
+            <div class="circle-label"><span id="pomoTime" class="badge-time">25:00</span></div>
+            <div class="pill-content">
+                <div class="pomo-modes"><button class="mode-btn active" onclick="modDegistir(25, this, 'focus')">Focus</button><button class="mode-btn" onclick="modDegistir(5, this, 'break')">Mola</button><button class="mode-btn" onclick="modDegistir(15, this, 'break')">Uzun</button></div>
+                
+                <div class="icon-row">
+                    <button id="pomoToggle" class="icon-btn">
+                        <span id="pomoIcon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="svg-icon stroke-icon"><path fill="none" stroke="currentColor" stroke-width="1.5" d="M20.409 9.353a2.998 2.998 0 0 1 0 5.294L7.597 21.614C5.534 22.737 3 21.277 3 18.968V5.033c0-2.31 2.534-3.769 4.597-2.648z"/></svg>
+                        </span>
+                    </button>
+                    
+                    <button id="pomoReset" class="icon-btn">
+                        <span id="pomoResetIcon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512" class="svg-icon stroke-icon">
+                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M320 146s24.36-12-64-12a160 160 0 1 0 160 160"/>
+                                <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="m256 58l80 80l-80 80"/>
+                            </svg>
+                        </span>
+                    </button>
+                </div>
+            </div>
+            <audio id="alarmSound" preload="auto"><source src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" type="audio/mpeg"></audio>
+        </article>
+        <article class="pill-card glass tab-content" id="tab-ambience">
+            <span class="tab-label">Ambience</span>
+            <div style="width: 100%; margin-top: 20px;">
+                <div class="ambience-row"><button class="ambience-icon-btn" id="btnRain" onclick="toggleAmbience('rain')"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" class="svg-icon fill-icon"><path fill="currentColor" d="M10 4c2.465 0 3.863 1.574 4.066 3.474h.062c1.586 0 2.872 1.237 2.872 2.763S15.714 13 14.128 13l-.703-.001l-.013.034l-1.483 2.704a.5.5 0 0 1-.914-.396l.036-.083L12.29 13h-1.853l-.014.034l-1.483 2.704a.5.5 0 0 1-.914-.396l.036-.083L9.301 13H7.432L5.94 15.737a.5.5 0 0 1-.595.235l-.083-.036a.5.5 0 0 1-.236-.595l.036-.083L6.293 13h-.421C4.286 13 3 11.763 3 10.237c0-1.47 1.192-2.671 2.697-2.758l.237-.005C6.139 5.561 7.535 4 10 4m0 1C8.35 5 6.913 6.27 6.913 8.025c0 .278-.254.496-.545.496h-.55C4.814 8.521 4 9.3 4 10.261C4 11.22 4.814 12 5.818 12h8.364C15.186 12 16 11.221 16 10.26c0-.96-.814-1.739-1.818-1.739h-.55c-.29 0-.545-.218-.545-.496C13.087 6.248 11.65 5 10 5"/></svg></button><div class="slider-group"><span class="slider-label">Rain Volume</span><input type="range" class="mini-slider" id="volRain" min="0" max="1" step="0.1" value="0.5"></div></div>
+                <div class="ambience-row"><button class="ambience-icon-btn" id="btnForest" onclick="toggleAmbience('forest')"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="svg-icon fill-icon"><path fill="currentColor" d="m18 8.462l-1.03.93q-.236.23-.566.23t-.623-.18q-.235-.16-.322-.46q-.086-.3.025-.678l.477-1.558l-1.08-.654q-.285-.167-.4-.467t-.046-.61q.067-.29.336-.46t.629-.17h1.308l.377-1.258q.092-.321.349-.532q.257-.21.566-.21t.566.21t.35.532l.376 1.258H20.6q.34 0 .607.17t.359.46q.117.316.009.626q-.108.309-.367.451l-1.17.654l.478 1.52q.111.359.034.681t-.33.495q-.28.198-.617.189t-.572-.239zm0-1.424q.387 0 .655-.268t.268-.655t-.268-.655T18 5.192t-.655.269t-.268.655t.268.654t.655.27m-5.161 10.707q.459 1.193-.328 2.223T10.346 21q-.671 0-1.255-.387q-.583-.386-.914-1.048q-1.594.07-2.697-1.024q-1.103-1.093-1.046-2.68q-.673-.309-1.053-.96T3 13.435q0-1.295 1.157-2.001t2.405-.195l1.319.534q.327-.91 1.085-1.484q.757-.573 1.707-.623v-1.57q0-.19.126-.316t.317-.126t.316.126t.126.316v1.615q1.078.122 1.842.882t.938 1.926h1.604q.19 0 .317.126q.125.126.125.316q0 .191-.125.317q-.126.126-.317.126h-1.569q-.05.93-.638 1.688t-1.496 1.104zm-5.008.831q-.097-.675.006-1.38t.367-1.4q-.633.274-1.353.358t-1.428-.024q.058 1.071.745 1.758t1.663.688M6.134 15.17q.916 0 1.817-.335q.901-.334 1.991-1.088l-3.654-1.558q-.84-.357-1.564.042T4 13.458q0 .746.598 1.228q.598.483 1.537.483M10.346 20q.837 0 1.34-.601t.226-1.287l-1.543-3.939q-.782 1.03-1.16 1.956t-.378 1.786q0 .922.422 1.503q.422.582 1.093.582m1.516-4.742q.673-.289 1.092-.884t.419-1.315q0-.992-.679-1.696t-1.665-.704q-.777 0-1.379.42t-.82 1.098l2.182.938zm-3.658.538"/></svg></button><div class="slider-group"><span class="slider-label">Forest Volume</span><input type="range" class="mini-slider" id="volForest" min="0" max="1" step="0.1" value="0.5"></div></div>
+            </div>
+            <audio id="audioRain" loop><source src="rain.wav" type="audio/wav"></audio>
+            <audio id="audioForest" loop><source src="Forest.mp3" type="audio/mpeg"></audio>
+        </article>
+    </div>
+
+    <footer>
+        <div class="copyright-wrap">
+        <p class="copyright-text">© 2026 by Selin Celebi</p></div>
+    </footer>
+
+    <script>
+    const toggleSwitch = document.getElementById('toggle-switch');
+    const body = document.body;
+    
+    // Dark Mode Toggle
+    toggleSwitch.addEventListener('change', (e) => { 
+        if (e.target.checked) { body.classList.add('dark-mode'); } 
+        else { body.classList.remove('dark-mode'); } 
+    });
+
+    const radioPlayer = document.getElementById('radioPlayer');
+    const radioToggle = document.getElementById('radioToggle');
+    const radioIcon = document.getElementById('radioIcon');
+    const soundWaves = document.getElementById('soundWaves'); 
+    const volumeSlider = document.getElementById('volumeSlider');
+    const audioRain = document.getElementById('audioRain');
+    const audioForest = document.getElementById('audioForest');
+    const btnRain = document.getElementById('btnRain');
+    const btnForest = document.getElementById('btnForest');
+    const volRain = document.getElementById('volRain');
+    const volForest = document.getElementById('volForest');
+    const timeDisplay = document.getElementById('pomoTime');
+    const pomoToggle = document.getElementById('pomoToggle');
+    const pomoReset = document.getElementById('pomoReset');
+    const pomoIcon = document.getElementById('pomoIcon');
+    const alarmSound = document.getElementById('alarmSound');
+    const statTotalTime = document.getElementById('statTotalTime');
+    const statLoopCount = document.getElementById('statLoopCount');
+    const wrapper = document.getElementById('hareketliEleman');
+    const fill = document.getElementById('progress-fill');
+    const container = document.getElementById('scene-container');
+
+    let isRadioPlaying = false; 
+    let timerInterval = null; 
+    let isRunning = false;
+    let totalTimeInSeconds = 25 * 60; 
+    let remainingTime = totalTimeInSeconds;
+    let currentMode = 'focus'; 
+    let completedLoops = 0; 
+    let totalMinutesWorked = 0;
+
+    /* ============================================================
+       1. İKON TANIMLARI (DÜZELTİLDİ: Class ve currentColor Eklendi)
+       ============================================================ */
+    
+    // RADYO: Oynat (Play) İkonu
+    const radioPlaySvg = `
+         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="svg-icon stroke-icon">
+            <path fill="none" stroke="currentColor" stroke-width="1.5" d="M20.409 9.353a2.998 2.998 0 0 1 0 5.294L7.597 21.614C5.534 22.737 3 21.277 3 18.968V5.033c0-2.31 2.534-3.769 4.597-2.648z"/>
+        </svg>`;
+    
+    // RADYO: Duraklat (Pause) İkonu
+    const radioPauseSvg = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="svg-icon stroke-icon">
+            <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                <rect x="6" y="4" width="4" height="16" rx="1" />
+                <rect x="14" y="4" width="4" height="16" rx="1" />
+            </g>
+        </svg>`;
+
+    // POMODORO: Oynat (Play) İkonu
+    const pomoPlaySvg = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="svg-icon stroke-icon">
+            <path fill="none" stroke="currentColor" stroke-width="1.5" d="M20.409 9.353a2.998 2.998 0 0 1 0 5.294L7.597 21.614C5.534 22.737 3 21.277 3 18.968V5.033c0-2.31 2.534-3.769 4.597-2.648z"/>
+        </svg>`;
+
+    // POMODORO: Duraklat (Pause) İkonu
+    const pomoPauseSvg = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="svg-icon stroke-icon">
+            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5v14m8-14v14"/>
+        </svg>`;
+
+
+    /* ============================================================
+       3. RADYO MANTIĞI
+       ============================================================ */
+    radioPlayer.volume = 0.5;
+    
+    radioToggle.addEventListener('click', () => { 
+        if (isRadioPlaying) { 
+            radioPlayer.pause(); 
+            isRadioPlaying = false; 
+            radioIcon.innerHTML = radioPlaySvg; // SVG Güncellendi
+            radioToggle.classList.remove('active'); 
+            soundWaves.classList.remove('playing'); 
+        } else { 
+            radioPlayer.play(); 
+            isRadioPlaying = true; 
+            radioIcon.innerHTML = radioPauseSvg; // SVG Güncellendi
+            radioToggle.classList.add('active'); 
+            soundWaves.classList.add('playing'); 
+        } 
+    });
+    
+    volumeSlider.addEventListener('input', (e) => { radioPlayer.volume = e.target.value; });
+
+    /* ============================================================
+       4. AMBIENCE MANTIĞI
+       ============================================================ */
+    audioRain.volume = 0.5; audioForest.volume = 0.5;
+    
+    function toggleAmbience(type) { 
+        if (type === 'rain') { 
+            if (audioRain.paused) { audioRain.play(); btnRain.classList.add('active'); } 
+            else { audioRain.pause(); btnRain.classList.remove('active'); } 
+        } else if (type === 'forest') { 
+            if (audioForest.paused) { audioForest.play(); btnForest.classList.add('active'); } 
+            else { audioForest.pause(); btnForest.classList.remove('active'); } 
+        } 
+    }
+    
+    volRain.addEventListener('input', (e) => { audioRain.volume = e.target.value; });
+    volForest.addEventListener('input', (e) => { audioForest.volume = e.target.value; });
+
+    /* ============================================================
+       5. POMODORO MANTIĞI
+       ============================================================ */
+    pomoToggle.addEventListener('click', () => { 
+        if (isRunning) { pauseTimer(); } 
+        else { startTimer(); } 
+    });
+    
+    pomoReset.addEventListener('click', () => { 
+        pauseTimer(); 
+        remainingTime = totalTimeInSeconds; 
+        updateTimeDisplay(); 
+        resetAnimation(); 
+    });
+
+    function startTimer() { 
+        isRunning = true; 
+        pomoIcon.innerHTML = pomoPauseSvg; // SVG Güncellendi
+        runAnimation(remainingTime); 
+        
+        timerInterval = setInterval(() => { 
+            if (remainingTime > 0) { 
+                remainingTime--; 
+                updateTimeDisplay(); 
+            } else { 
+                pauseTimer(); 
+                pomoIcon.innerHTML = pomoPlaySvg; // SVG Güncellendi
+                alarmSound.currentTime = 0; 
+                alarmSound.play(); 
+                if (currentMode === 'focus') { 
+                    completedLoops++; 
+                    statLoopCount.innerText = completedLoops; 
+                    const sessionMinutes = Math.floor(totalTimeInSeconds / 60); 
+                    totalMinutesWorked += sessionMinutes; 
+                    statTotalTime.innerText = `${totalMinutesWorked} mins`; 
+                } 
+            } 
+        }, 1000); 
+    }
+
+    function pauseTimer() { 
+        isRunning = false; 
+        pomoIcon.innerHTML = pomoPlaySvg; // SVG Güncellendi
+        clearInterval(timerInterval); 
+        freezeAnimation(); 
+    }
+
+    function updateTimeDisplay() { const minutes = Math.floor(remainingTime / 60); const seconds = remainingTime % 60; timeDisplay.innerText = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`; }
+    function modDegistir(dakika, btn, modeType) { document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); pauseTimer(); currentMode = modeType; totalTimeInSeconds = dakika * 60; remainingTime = totalTimeInSeconds; updateTimeDisplay(); resetAnimation(); }
+    function runAnimation(duration) { const mesafe = container.offsetWidth; wrapper.style.transition = `transform ${duration}s linear`; fill.style.transition = `width ${duration}s linear`; wrapper.style.transform = `translateX(${mesafe}px)`; fill.style.width = '100%'; }
+    function freezeAnimation() { const wrapperStyle = window.getComputedStyle(wrapper); const fillStyle = window.getComputedStyle(fill); const currentTransform = wrapperStyle.transform; const currentWidth = fillStyle.width; wrapper.style.transition = 'none'; fill.style.transition = 'none'; wrapper.style.transform = currentTransform; fill.style.width = currentWidth; }
+    function resetAnimation() { wrapper.style.transition = 'none'; fill.style.transition = 'none'; wrapper.style.transform = 'translateX(0)'; fill.style.width = '0%'; }
+    window.addEventListener('resize', () => { if (isRunning) { pauseTimer(); alert("Ekran boyutu değiştiği için sayaç durduruldu. Lütfen tekrar başlatın."); resetAnimation(); remainingTime = totalTimeInSeconds; updateTimeDisplay(); } else { resetAnimation(); } });
+
+    /* === MOBİL SEKME GEÇİŞİ === */
+    function openTab(tabName, btnElement) {
+        if (window.innerWidth > 768) return;
+        document.querySelectorAll('.tab-content').forEach(card => { card.classList.remove('active-tab'); });
+        document.querySelectorAll('.menu-item').forEach(btn => { btn.classList.remove('active'); });
+        document.getElementById('tab-' + tabName).classList.add('active-tab');
+        btnElement.classList.add('active');
+    }
+    </script>
+</body>
+</html>
