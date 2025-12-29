@@ -29,7 +29,7 @@
             --accent-gradient: linear-gradient(90deg, #ff9a9e 0%, #ff6b6b 100%);
             
             /* MENÜ RENKLERİ (GÜNDÜZ - AÇIK/ŞEFFAF) */
-            --menu-bg: rgba(255, 255, 255, 0.85); 
+            --menu-bg: rgba(255, 255, 255, 0.1);
             --menu-text: #555;
             --menu-border: rgba(255, 255, 255, 0.5);
             --menu-active-text: #fff;
@@ -195,6 +195,7 @@
             body { padding-left: 0; padding-right: 0; gap: 15px; }
             .cards-wrapper { width: 100%; flex-direction: column; align-items: center; gap: 15px; }
             
+            /* --- MOBİL TAB MENÜ --- */
             .mobile-menu {
                 display: flex;
                 justify-content: space-around;
@@ -208,11 +209,21 @@
                 border: 1px solid var(--menu-border);
                 box-shadow: 0 10px 20px rgba(0,0,0,0.1);
             }
-            .menu-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--menu-text); cursor: pointer; transition: 0.3s; padding: 0; }
-            .menu-icon { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.3s; position: relative; }
+
+            .menu-item {
+                background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--menu-text); cursor: pointer; transition: 0.3s; padding: 0;
+            }
+
+            .menu-icon {
+                width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.3s; position: relative;
+            }
+
             .menu-item span { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.5px; }
+
             .menu-item.active { color: var(--accent-color); }
-            .menu-item.active .menu-icon { background: var(--accent-color); color: var(--menu-active-text); box-shadow: 0 5px 15px rgba(0,0,0,0.2); transform: translateY(-2px); }
+            .menu-item.active .menu-icon {
+                background: var(--accent-color); color: var(--menu-active-text); box-shadow: 0 5px 15px rgba(0,0,0,0.2); transform: translateY(-2px);
+            }
             .menu-item.active span { color: #fff; }
 
             .pill-card { width: 90% !important; margin: 0 auto; max-width: 400px; padding: 20px; box-sizing: border-box; }
