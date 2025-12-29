@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Good Luck! (●'◡'●)</title>
     <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.8.11/dist/dotlottie-wc.js" type="module"></script>
 
@@ -27,6 +27,11 @@
             --shadow-color: rgba(31, 38, 135, 0.1);
             --accent-color: #ff6b6b;
             --accent-gradient: linear-gradient(90deg, #ff9a9e 0%, #ff6b6b 100%);
+            
+            /* MENÜ RENKLERİ (GÜNDÜZ - AÇIK/ŞEFFAF) */
+            --menu-bg: rgba(255, 255, 255, 0.85); 
+            --menu-text: #555;
+            --menu-border: rgba(255, 255, 255, 0.5);
             --menu-active-text: #fff;
         }
 
@@ -45,6 +50,11 @@
             --btn-icon-color: #fff;
             --ambience-row-bg: rgba(0, 0, 0, 0.3);
             --shadow-color: rgba(0,0,0,0.5);
+            
+            /* MENÜ RENKLERİ (GECE - KOYU) */
+            --menu-bg: rgba(0, 0, 0, 0.85);
+            --menu-text: #aaa;
+            --menu-border: rgba(255, 255, 255, 0.1);
         }
 
         /* =========================================
@@ -61,7 +71,7 @@
             transition: background 0.5s ease;
             color: var(--text-main);
             padding-top: 80px; 
-            padding-bottom: 50px; 
+            padding-bottom: 20px; 
         }
 
         .background-atmosphere {
@@ -85,7 +95,6 @@
         .cloud-3::after { width: 40px; height: 40px; top: -20px; left: 15px; }
         .cloud-4 { width: 150px; height: 60px; top: 15%; right: -180px; animation-duration: 40s; animation-delay: 15s; } 
         .cloud-4::after { width: 60px; height: 60px; top: -30px; left: 25px; }
-        
         @keyframes floatCloud { 0% { transform: translateX(0); } 100% { transform: translateX(-120vw); } }
 
         .night-stars { position: absolute; width: 100%; height: 100%; opacity: 0; transition: opacity 1s ease; }
@@ -98,7 +107,15 @@
 
         /* --- BİLEŞENLER --- */
         .custom-toggle-wrapper { position: absolute; top: 20px; right: 20px; transform: scale(0.35); transform-origin: top right; z-index: 100; }
-        .toggle-checkbox { display: none; }
+        
+        .toggle-checkbox { 
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+        
         .toggle-container { position: relative; width: 471px; height: 150px; background-color: #2e8bde; border-radius: 132.2px; overflow: hidden; cursor: pointer; box-shadow: inset 4.48px 8.96px 4.48px #01004440, inset -4.48px -4.48px 4.48px #01005940; transition: background-color 0.5s ease-in-out; display: block; }
         .toggle-checkbox:checked + .toggle-container { background-color: #021220; }
         .clouds { position: absolute; top: 38px; left: -45px; width: 549px; height: 202px; transition: transform 0.6s ease-in-out, opacity 0.4s; }
@@ -141,16 +158,8 @@
         .slider-label { font-size: 0.7rem; color: var(--text-sub); margin-bottom: 5px; }
         .mini-slider { width: 100%; accent-color: #74b9ff; height: 4px; cursor: pointer; }
         
-        /* --- SES DALGALARI (GÜNCELLENDİ) --- */
         .wave-container { display: flex; justify-content: center; align-items: center; gap: 3px; height: 60px; margin: 20px 0 30px 0; }
-        .wave-bar { 
-            width: 5px; 
-            height: 4px; /* Başlangıç min yükseklik */
-            background-color: var(--accent-color); 
-            border-radius: 4px; 
-            transition: height 0.15s ease-out; 
-            will-change: height;
-        }
+        .wave-bar { width: 5px; height: 4px; background-color: var(--accent-color); border-radius: 4px; transition: height 0.15s ease-out; will-change: height; }
         
         .volume-control { display: flex; align-items: center; gap: 10px; width: 100%; margin-top: 0px; }
         input[type=range] { flex: 1; accent-color: var(--accent-color); cursor: pointer; }
@@ -160,18 +169,21 @@
         .mode-btn.active { background: var(--accent-color); color: white; }
         .icon-row { display: flex; gap: 15px; justify-content: center; }
 
-        /* --- SVG GENEL AYARLARI --- */
         .svg-icon { width: 24px; height: 24px; transition: 0.3s; }
         .stroke-icon { fill: none; stroke: currentColor; }
         .fill-icon { fill: currentColor; stroke: none; }
 
         /* FOOTER STİLİ */
-        footer { margin-top: auto; width: 100%; text-align: center; padding: 15px 0; z-index: 10; }
+        footer { 
+            margin-top: auto; 
+            width: 100%; 
+            text-align: center; 
+            padding: 20px 0; 
+            z-index: 100;
+            position: relative;
+        }
         .copyright-text { font-size: 0.8rem; color: var(--text-sub); opacity: 0.7; margin: 0; }
 
-        /* =========================================
-           4. RESPONSIVE AYARLAR
-           ========================================= */
         .mobile-menu { display: none; }
 
         @media (max-width: 1024px) {
@@ -186,12 +198,12 @@
             .mobile-menu {
                 display: flex; justify-content: space-around;
                 width: 85%; margin: 0 auto 5px auto; max-width: 380px;
-                background: rgba(0, 0, 0, 0.85); 
+                background: var(--menu-bg); 
                 padding: 10px 15px; border-radius: 50px;
-                backdrop-filter: blur(15px); border: 1px solid rgba(255,255,255,0.1);
+                backdrop-filter: blur(15px); border: 1px solid var(--menu-border);
                 box-shadow: 0 10px 20px rgba(0,0,0,0.1);
             }
-            .menu-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px; color: #aaa; cursor: pointer; transition: 0.3s; padding: 0; }
+            .menu-item { background: none; border: none; display: flex; flex-direction: column; align-items: center; gap: 4px; color: var(--menu-text); cursor: pointer; transition: 0.3s; padding: 0; }
             .menu-icon { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.3s; position: relative; }
             .menu-item span { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.5px; }
             .menu-item.active { color: var(--accent-color); }
@@ -203,7 +215,9 @@
             .tab-content.active-tab { display: flex !important; }
             @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
 
-            .custom-toggle-wrapper { transform: scale(0.25); top: 15px; right: 10px; }
+            /* GÜNCELLENDİ: Toggle Button Position (Aşağı alındı) */
+            .custom-toggle-wrapper { transform: scale(0.25); top: 40px; right: 10px; }
+            
             .lottie-wrapper { width: 130px; height: 130px; left: -65px; top: calc(50% - 100px); }
             #scene-container { width: 80%; height: 180px; margin: 0 auto; overflow: visible; }
             .stats-panel { padding: 8px 20px; gap: 15px; }
@@ -270,7 +284,9 @@
             <div class="icon-row" style="margin-bottom: 20px;">
                 <button id="radioToggle" class="icon-btn">
                     <span id="radioIcon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="svg-icon stroke-icon"><path fill="none" stroke="currentColor" stroke-width="1.5" d="M20.409 9.353a2.998 2.998 0 0 1 0 5.294L7.597 21.614C5.534 22.737 3 21.277 3 18.968V5.033c0-2.31 2.534-3.769 4.597-2.648z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="svg-icon stroke-icon">
+                            <path fill="none" stroke="currentColor" stroke-width="1.5" d="M20.409 9.353a2.998 2.998 0 0 1 0 5.294L7.597 21.614C5.534 22.737 3 21.277 3 18.968V5.033c0-2.31 2.534-3.769 4.597-2.648z"/>
+                        </svg>
                     </span>
                 </button>
             </div>
@@ -282,15 +298,20 @@
             <div class="circle-label"><span id="pomoTime" class="badge-time">25:00</span></div>
             <div class="pill-content">
                 <div class="pomo-modes"><button class="mode-btn active" onclick="modDegistir(25, this, 'focus')">Focus</button><button class="mode-btn" onclick="modDegistir(5, this, 'break')">Mola</button><button class="mode-btn" onclick="modDegistir(15, this, 'break')">Uzun</button></div>
+                
                 <div class="icon-row">
                     <button id="pomoToggle" class="icon-btn">
                         <span id="pomoIcon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" class="svg-icon stroke-icon"><path fill="none" stroke="currentColor" stroke-width="1.5" d="M20.409 9.353a2.998 2.998 0 0 1 0 5.294L7.597 21.614C5.534 22.737 3 21.277 3 18.968V5.033c0-2.31 2.534-3.769 4.597-2.648z"/></svg>
                         </span>
                     </button>
+                    
                     <button id="pomoReset" class="icon-btn">
                         <span id="pomoResetIcon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512" class="svg-icon stroke-icon"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M320 146s24.36-12-64-12a160 160 0 1 0 160 160"/><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="m256 58l80 80l-80 80"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512 512" class="svg-icon stroke-icon">
+                                <path fill="none" stroke="#ff6b6b" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M320 146s24.36-12-64-12a160 160 0 1 0 160 160"/>
+                                <path fill="none" stroke="#ff6b6b" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="m256 58l80 80l-80 80"/>
+                            </svg>
                         </span>
                     </button>
                 </div>
@@ -307,6 +328,11 @@
             <audio id="audioForest" loop playsinline><source src="Forest.mp3" type="audio/mpeg"></audio>
         </article>
     </div>
+
+    <footer>
+        <div class="copyright-wrap">
+        <p class="copyright-text">© 2026 by Selin Celebi</p></div>
+    </footer>
 
     <script>
     const toggleSwitch = document.getElementById('toggle-switch');
